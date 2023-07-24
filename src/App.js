@@ -15,22 +15,47 @@ export default function App() {
         {id: crypto.randomUUID(), title: newItem, completed: false},
       ]
     })
+
+    setNewItem("") // clears text box
+
   }
 
-  console.log(todos)
+  function toggleToDo(id, completed) {
+    setTodos(currentTodos => {
+      return currentTodos.map(todo => {
+        if (todo.id === id) {
+          return { ...todo, completed }
+        }
+
+        return todo
+      })
+    })
+  }
+
+  function deleteTodo(id) {
+    setTodos(currentTodo => {
+      return currentTodo.filter(todo => todo.id !== id)
+    })
+  }
 
   return (
     <>
     <h1>Todo List:</h1>
     <ul className= "list">
-      <li>
-        <label>
-          <input type="checkbox" />
-            Item 1
-        </label>
-        <button className="btn btn-danger">Delete</button>
-      </li>
+      {todos.map(todo => {
+        return (
+          <li key={todo.id}> {/* each child needs key prop performance opt*/}
+          <label>
+            <input type="checkbox" checked={todo.completed}
+            onChange={e => toggleToDo(todo.id, e.target.check)}/>
+            {todo.title}
+          </label>
+          <button onClick={ () => deleteTodo(todo.id)} className="btn btn-danger">Delete</button>
+        </li>
+        )
+      })}
     </ul>
+
   <form onSubmit={handleSubmit} className="new-item-form">
     <div className="form-row">
       <label htmlFor="item">New Task:</label>
